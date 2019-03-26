@@ -1,40 +1,39 @@
 package com.capgemini.filehandling.client;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.capgemini.filehandling.model.Employee;
+import com.capgemini.filehandling.model.EmployeeDeserialize;
+import com.capgemini.filehandling.model.EmployeeSerialize;
 
 public class EmployeeTest {
 
+	private static Employee employee;
+
+	@BeforeClass
+	public static void setUp() {
+		employee = new Employee(101, "John Deo", 34000);
+	}
+
 	@Test
-	public void testObjectWriteIntoFileAndReadIntoFileSuccessfully()
-			throws IOException, ClassNotFoundException {
-		Employee employee = new Employee(101, "John Deo", 34000);
-		Employee employee3 = new Employee(102, "Anna", 36000);
+	public void testObjectSerializeSuccessfully() throws IOException, ClassNotFoundException {
 
-		FileOutputStream fileOutputStream = new FileOutputStream("employee.ser");
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-		objectOutputStream.writeObject(employee);
-		objectOutputStream.close();
+		EmployeeSerialize employeeser = new EmployeeSerialize();
+		assertTrue(employeeser.serialization(employee));
 
-		FileInputStream fileInputStream = new FileInputStream("employee.ser");
-		ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
+	}
 
-		Employee employee2 = (Employee) inputStream.readObject();
+	@Test
+	public void testObjectDeserializeSuccessfull() throws IOException, ClassNotFoundException {
 
-		inputStream.close();
-
-		assertTrue(employee.equals(employee2));
-		assertFalse(employee.equals(employee3));
+		EmployeeDeserialize deserialize=new EmployeeDeserialize();
+		
+		assertTrue(deserialize.deserialization().equals(employee));
 	}
 
 }
